@@ -20,14 +20,14 @@ def padding_sign(padded_seq: ndarray, dict_size: int, mode: bool) -> ndarray:
     sign: List[List[int]] = []
     # decoder_input添加SOS
     if mode:
-        for i in range(len(padded_seq)):
+        for i in padded_seq:
             sign.append([dict_size + 1])
         ndarray_sign: ndarray = np.array(sign)
         arr = np.concatenate([ndarray_sign, padded_seq], axis=-1)
     # decoder_target添加EOS
     else:
-        for i in range(len(padded_seq)):
-            padded_seq[i].append(dict_size + 2)
+        for i in padded_seq:
+            i.append(dict_size + 2)
         arr = padded_seq
     return arr
 
@@ -83,7 +83,7 @@ def train_model(batch_size: int, epochs: int):
 
 
 def get_dict() -> Dict[str]:
-    with open(dict_path, 'r') as file:
+    with open(dict_path, 'r', encoding='utf-8') as file:
         emb_dict = json.load(file)
     return emb_dict
 
@@ -278,7 +278,7 @@ def pre_precess():
     # 将数据向量化
     data_loader.word_to_vec()
     # 保存字典
-    with open(dict_path, 'w') as file:
+    with open(dict_path, 'w', encoding='utf-8') as file:
         json.dump(data_loader.dict, file)
 
     encoder_input_data = np.array(pad_sequences(data_loader.input_vec, padding='post'))
